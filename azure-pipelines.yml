@@ -1,8 +1,7 @@
 trigger:
 - main
 
-pool:
-  vmImage: 'UAT-Pipeline-Agents'
+pool: 'UAT-Pipeline-Agents'
 
 steps:
 - task: TerraformInstaller@1
@@ -14,6 +13,11 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'init'
+    backendServiceArm: 'nits-federated-app'
+    backendAzureRmResourceGroupName: 'nits1'
+    backendAzureRmStorageAccountName: 'nitsstg1'
+    backendAzureRmContainerName: 'niteshcontainer'
+    backendAzureRmKey: 'terraform.tfstate'
 
 - task: TerraformTaskV5@5
   displayName: 'Terraform Plan'
