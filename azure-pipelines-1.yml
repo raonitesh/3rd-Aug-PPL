@@ -14,7 +14,7 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'init'
-    backendServiceArm: 'nits-federated-app>'
+    backendServiceArm: 'nits-federated-app'
     backendAzureRmResourceGroupName: 'nits1'
     backendAzureRmStorageAccountName: 'nitsstg1'
     backendAzureRmContainerName: 'niteshcontainer'
