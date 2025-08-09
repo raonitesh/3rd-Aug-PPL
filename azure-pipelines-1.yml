@@ -26,5 +26,10 @@ steps:
     command: 'plan'
     workingDirectory: 'D:\git_revision\3rd-Aug-PPL'
     environmentServiceNameAzureRM: 'nits-federated-app'
-
+- task: TerraformTask@5
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: 'D:\git_revision\3rd-Aug-PPL'
+    environmentServiceNameAzureRM: 'nits-federated-app'
 
