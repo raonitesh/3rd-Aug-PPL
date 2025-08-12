@@ -9,3 +9,15 @@ variable "rg_location" {
   type        = string
   default     = "West Europe"
 }
+
+variable "rg_name1" {
+  description = "The name of the resource group"
+  type        = string
+  default     = "RG_3rd1"
+}
+
+variable "rg_location1" {
+  description = "The location of the resource group"
+  type        = string
+  default     = "West Europe"
+}
