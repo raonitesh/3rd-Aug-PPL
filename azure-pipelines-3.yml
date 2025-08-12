@@ -1,0 +1,83 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+
+variables:
+  TF_VERSION: '1.5.7'        # adjust as needed
+  WORKING_DIR: '.'           # जहाँ terraform files हैं
+  ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)   # set in pipeline variables or secure pipeline library
+  ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+  ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+  ARM_TENANT_ID: $(ARM_TENANT_ID)
+
+stages:
+
+- stage: Init
+  displayName: 'Terraform Init'
+  jobs:
+  - job: TerraformInit
+    pool: 
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+    - script: |
+        curl -sLo tf.zip https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+        unzip tf.zip -d /usr/local/bin
+        terraform version
+      displayName: 'Install Terraform'
+    - script: |
+        cd $(WORKING_DIR)
+        terraform init -input=false
+      displayName: 'terraform init'
+
+- stage: Plan
+  displayName: 'Terraform Plan'
+  dependsOn: Init
+  jobs:
+  - job: TerraformPlan
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: |
+        cd $(WORKING_DIR)
+        terraform validate
+        terraform plan -out=tfplan -input=false
+        terraform show -no-color tfplan > plan.txt
+      displayName: 'terraform validate & plan'
+    - publish: $(WORKING_DIR)/plan.txt
+      artifact: tfplan
+
+- stage: Apply
+  displayName: 'Terraform Apply (only on main and on success)'
+  dependsOn: Plan
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  jobs:
+  - job: TerraformApply
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - download: current
+      artifact: tfplan
+    - script: |
+        cd $(WORKING_DIR)
+        # Authenticate to Azure using service principal environment vars
+        export ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)
+        export ARM_CLIENT_ID=$(ARM_CLIENT_ID)
+        export ARM_CLIENT_SECRET=$(ARM_CLIENT_SECRET)
+        export ARM_TENANT_ID=$(ARM_TENANT_ID)
+
+        # Optional: show plan
+        cat plan.txt
+
+        # apply from saved plan (if you used plan -out)
+        terraform apply -input=false tfplan
+      displayName: 'terraform apply'
