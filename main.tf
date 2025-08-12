@@ -4,6 +4,7 @@ resource "azurerm_resource_group" "rg1" {
 
 }
 
+#new resource group
 resource "azurerm_resource_group" "rg2" {
   name     = var.rg_name1
   location = var.rg_location1
