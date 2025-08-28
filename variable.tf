@@ -1,7 +1,7 @@
 variable "rg_name" {
   description = "The name of the resource group"
   type        = string
-  default     = "RG_3rd"
+  default     = "RG_3rdn1"
 }
 
 variable "rg_location" {
@@ -13,7 +13,7 @@ variable "rg_location" {
 variable "rg_name1" {
   description = "The name of the resource group"
   type        = string
-  default     = "RG_3rd3"
+  default     = "RG_3rdn2"
 }
 
 
