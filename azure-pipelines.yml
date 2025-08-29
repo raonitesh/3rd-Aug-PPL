@@ -8,7 +8,7 @@ pool: 'UAT-Pipeline-Agents'
 
 variables:
   nitesh_path: 'D:\\git_revision\\3rd-Aug-PPL'
-  service_connection: 'nits-federated-app'
+  service_connection: 'nits-federated-app1'
        
 steps:
 - task: TerraformInstaller@1
@@ -22,7 +22,7 @@ steps:
     provider: 'azurerm'
     command: 'init'
     workingDirectory: 'D:\\git_revision\\3rd-Aug-PPL'
-    backendServiceArm: 'nits-federated-app'
+    backendServiceArm: 'nits-federated-app1'
     backendAzureRmStorageAccountName: 'nitsstg1'
     backendAzureRmContainerName: 'niteshcontainer'
     backendAzureRmKey: 'pp.tfstate'
@@ -40,7 +40,7 @@ steps:
     provider: 'azurerm'
     command: 'plan'
     workingDirectory: 'D:\\git_revision\\3rd-Aug-PPL'
-    environmentServiceNameAzureRM: 'nits-federated-app'
+    environmentServiceNameAzureRM: 'nits-federated-app1'
 
 - task: TerraformTask@5
   displayName: terraform apply
@@ -49,4 +49,4 @@ steps:
     provider: 'azurerm'
     command: 'apply'
     workingDirectory: 'D:\\git_revision\\3rd-Aug-PPL'
-    environmentServiceNameAzureRM: 'nits-federated-app'
+    environmentServiceNameAzureRM: 'nits-federated-app1'
